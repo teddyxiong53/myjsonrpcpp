@@ -2,6 +2,7 @@
 #define _XHL_JSON_RPC_PP_H_
 
 
+#include "impl/types.h"
 
 #include "impl/Entity.h"
 #include "impl/NullableEntity.h"
@@ -11,5 +12,7 @@
 
 #include "impl/Request.h"
 #include "impl/Response.h"
+#include "impl/Notification.h"
+#include "impl/Parser.h"
 
 #endif //_XHL_JSON_RPC_PP_H_
