@@ -1,8 +1,15 @@
 #ifndef _IMPL_ENTITY_H_
 #define _IMPL_ENTITY_H_
+#include "json.hpp"
+#include <exception>
+#include <string>
+#include <vector>
 
+
+using Json = nlohmann::json;
 namespace jsonrpcpp
 {
+class ParseErrorException;
 
 class Entity {//是值语义。
 public:
@@ -73,8 +80,11 @@ public:
     virtual Json to_json() const = 0;
     virtual void parse_json(const Json& json) = 0;
 
-    virtual void parse(const std::string& json_str);
-    virtual void parse(const char * json_str);
+    virtual void parse(const std::string& json_str) {
+        parse(json_str.c_str());
+    }
+    virtual void parse(const char * json_str) ;
+
 
 protected:
     entity_t m_entity;
