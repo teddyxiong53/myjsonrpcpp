@@ -5,6 +5,7 @@
 #include "ParseErrorException.h"
 #include <memory>
 #include "Request.h"
+#include "Batch.h"
 
 namespace jsonrpcpp
 {
@@ -55,7 +56,10 @@ public:
         return entity;
     }
 
-    entity_ptr do_parse(const std::string& json_str) {
+    entity_ptr parse_json(const Json& json) {
+        return do_parse_json(json);
+    }
+    static entity_ptr do_parse(const std::string& json_str) {
         try {
             return do_parse_json(Json::parse(json_str));
         } catch(const RpcException &e) {
@@ -65,7 +69,7 @@ public:
         }
         return nullptr;
     }
-    entity_ptr do_parse_json(const Json& json) {
+    static entity_ptr do_parse_json(const Json& json) {
         try {
 
             if(is_request(json)) {
@@ -80,7 +84,9 @@ public:
             if(is_response(json)) {
                 return std::make_shared<Response>(json);
             }
-
+            if(is_batch(json)) {
+                return std::make_shared<Batch>(json);
+            }
         } catch(const RpcException& e) {
             throw;
         } catch(const std::exception& e) {
@@ -89,26 +95,26 @@ public:
         return nullptr;
     }
 
-    bool is_request(const Json& json) {
+    static bool is_request(const Json& json) {
         return (
             (json.count("method")!=0)
             && (json.count("id")!=0)
         );
     }
-    bool is_notification(const Json& json) {
+    static bool is_notification(const Json& json) {
         return (
             (json.count("method") != 0)
             && (json.count("id") == 0)
         );
     }
-    bool is_response(const std::string& json_str) {
+    static bool is_response(const std::string& json_str) {
         try {
             return is_response(Json::parse(json_str));
         } catch(const std::exception& e) {
             return false;
         }
     }
-    bool is_response(const Json& json) {
+    static bool is_response(const Json& json) {
         return (
             (
                 (json.count("result")!=0)
@@ -117,8 +123,42 @@ public:
             && json.count("id") != 0
         );
     }
+    static bool is_batch(const std::string& json_str) {
+        try {
+            return is_batch(Json::parse(json_str));
+        } catch(const std::exception& e) {
+            return false;
+        }
+    }
+    static bool is_batch(const Json& json) {
+        return (json.is_array());
+    }
 private:
     std::map<std::string, notification_callback> m_notification_callbacks;
     std::map<std::string, request_callback> m_request_callbacks;
 };
+
+void Batch::parse_json(const Json& json)  {
+    m_entities.clear();
+    mylogd("");
+    for(const auto& it: json) {
+        entity_ptr entity(nullptr);
+        try {
+            mylogd("");
+            entity = Parser::do_parse_json(it);
+            if(!entity) {
+                entity = std::make_shared<Error>("invalid request", -32600);
+            }
+        } catch(const RequestException& e) {
+            entity = std::make_shared<RequestException>(e);
+        } catch(const std::exception& e) {
+            entity = std::make_shared<Error>(e.what(), -32600);
+        }
+        mylogd("");
+        m_entities.push_back(entity);
+    }
+    if(m_entities.empty()) {
+        throw InvalidRequestException();
+    }
+}
 } // namespace jsonrpcpp

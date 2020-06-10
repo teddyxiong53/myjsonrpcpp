@@ -14,5 +14,6 @@
 #include "impl/Response.h"
 #include "impl/Notification.h"
 #include "impl/Parser.h"
+#include "impl/Batch.h"
 
 #endif //_XHL_JSON_RPC_PP_H_
