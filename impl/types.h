@@ -2,9 +2,12 @@
 #include <memory>
 #include <utility>
 #include <functional>
+#include "json.hpp"
 
 namespace jsonrpcpp
 {
+using Json = nlohmann::json;
+
 class Entity;
 class Request;
 class Response;

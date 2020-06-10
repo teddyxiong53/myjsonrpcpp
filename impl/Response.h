@@ -4,6 +4,7 @@
 #include "Error.h"
 #include "Request.h"
 #include "RequestException.h"
+#include "mylog.h"
 
 namespace jsonrpcpp
 {
@@ -23,7 +24,6 @@ public:
        m_result(result),
        m_error(nullptr)
     {
-
     }
     Response(const Id& id, const Error& error)
      : Entity(entity_t::response),
@@ -99,7 +99,7 @@ public:
     const Error& error() const {
         return m_error;
     }
-    
+
 protected:
     Id m_id;
     Json m_result;

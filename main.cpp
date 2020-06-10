@@ -28,7 +28,8 @@ void test(const std::string& json_str)
                 cout << "<-- " << entity->to_json().dump() << "\n";
             }
             if(entity->is_request()) {
-                jsonrpcpp::Response response = getResponse(std::dynamic_pointer_cast<jsonrpcpp::Request>(entity));
+                std::shared_ptr<Request> request = std::dynamic_pointer_cast<jsonrpcpp::Request>(entity);
+                jsonrpcpp::Response response = getResponse(request);
                 cout << "<-- " << response.to_json().dump() << "\n";
             } else if(entity->is_notification()) {
                 jsonrpcpp::notification_ptr notifcation = dynamic_pointer_cast<jsonrpcpp::Notification>(entity);
@@ -51,7 +52,7 @@ jsonrpcpp::response_ptr sum(const jsonrpcpp::Id& id, const jsonrpcpp::Parameter&
 }
 int main(int argc, char const *argv[])
 {
-    parser.register_request_callback("sum", sum);
+    //parser.register_request_callback("sum", sum);
     test(R"({"jsonrpc": "2.0", "method": "sum", "params": [1,2,3], "id": 1})");
     return 0;
 }

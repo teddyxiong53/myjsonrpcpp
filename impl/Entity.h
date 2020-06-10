@@ -4,12 +4,12 @@
 #include <exception>
 #include <string>
 #include <vector>
+#include "types.h"
 
 
-using Json = nlohmann::json;
+
 namespace jsonrpcpp
 {
-class ParseErrorException;
 
 class Entity {//是值语义。
 public:

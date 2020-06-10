@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "mylog.h"
 
 namespace jsonrpcpp
 {
@@ -27,7 +28,6 @@ public:
        m_int_id(id),
        m_string_id("")
     {
-
     }
     Id(const char *id)
      : Entity(entity_t::id),
@@ -53,8 +53,10 @@ public:
             m_type = value_t::null;
         } else if(json.is_number_integer()) {
             m_type = value_t::integer;
+            m_int_id = json.get<int>();
         } else if(json.is_string()) {
             m_type = value_t::string;
+            m_string_id = json.get<std::string>();
         } else {
             throw std::invalid_argument("id must be integer,string or null");
         }

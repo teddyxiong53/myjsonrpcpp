@@ -30,12 +30,12 @@ public:
 };
 
 void Entity::parse(const char * json_str) {
-        try {
-            parse_json(Json::parse(json_str));
-        } catch(const RpcException& e) {
-            throw;
-        } catch(const std::exception& e) {
-            throw ParseErrorException(e.what());
-        }
+    try {
+        parse_json(Json::parse(json_str));
+    } catch(const RpcException& e) {
+        throw;
+    } catch(const std::exception& e) {
+        throw ParseErrorException(e.what());
     }
+}
 } // namespace jsonrpcpp

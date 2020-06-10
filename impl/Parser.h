@@ -23,11 +23,22 @@ public:
             m_request_callbacks[request] = callback;
         }
     }
+    void register_notification_callback(const std::string& notification, notification_callback cb) {
+        if(cb) {
+            m_notification_callbacks[notification] = cb;
+        }
+    }
 
     entity_ptr parse(const std::string& json_str) {
         entity_ptr entity = do_parse(json_str);
         if(entity && entity->is_notification()) {
-
+            notification_ptr notification = std::dynamic_pointer_cast<Notification>(entity);
+            if(m_notification_callbacks.find(notification->method()) != m_notification_callbacks.end()) {
+                notification_callback cb = m_notification_callbacks[notification->method()];
+                if(cb) {
+                    cb(notification->params());
+                }
+            }
         } else if(entity && entity->is_request()) {
             request_ptr request = std::dynamic_pointer_cast<jsonrpcpp::Request>(entity);
             if(m_request_callbacks.find(request->method()) != m_request_callbacks.end()) {
