@@ -48,6 +48,7 @@ SOFTWARE.
 // #include <nlohmann/json_fwd.hpp>
 #ifndef NLOHMANN_JSON_FWD_HPP
 #define NLOHMANN_JSON_FWD_HPP
+#include "mylog.h"
 
 #include <cstdint> // int64_t, uint64_t
 #include <map> // map
@@ -15607,6 +15608,7 @@ class basic_json
                             const bool allow_exceptions = true)
     {
         basic_json result;
+
         parser(i, cb, allow_exceptions).parse(true, result);
         return result;
     }

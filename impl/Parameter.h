@@ -25,6 +25,10 @@ public:
        m_type(value_t::null)
     {
 
+        if(json != nullptr) {//必须用！=来判断，如果这样写：if(!json)//这样会报错的。
+
+            parse_json(json);
+        }
     }
     Parameter(const std::string& k1, const Json& v1,
             const std::string& k2, const Json& v2,
@@ -56,6 +60,7 @@ public:
     }
 
     void parse_json(const Json& json) {
+
         if(json.is_array()) {
             param_array = json.get<std::vector<Json>>();
             param_map.clear();

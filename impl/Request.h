@@ -16,6 +16,7 @@ public:
        m_method(""),
        m_id()
     {
+
         if(json != nullptr) {
             Request::parse_json(json);
         }
@@ -34,9 +35,11 @@ public:
             {"method", m_method},
             {"id", m_id.to_json()}
         };
+
         if(m_params) {
             json["params"]  = m_params.to_json();
         }
+
         return json;
     }
     void parse_json(const Json& json) override {

@@ -67,10 +67,14 @@ public:
     }
     entity_ptr do_parse_json(const Json& json) {
         try {
+
             if(is_request(json)) {
+
                 return std::make_shared<Request>(json);
             }
+
             if(is_notification(json)) {
+
                 return std::make_shared<Notification>(json);
             }
             if(is_response(json)) {
@@ -93,7 +97,7 @@ public:
     }
     bool is_notification(const Json& json) {
         return (
-            (json.count("method")!=0)
+            (json.count("method") != 0)
             && (json.count("id") == 0)
         );
     }

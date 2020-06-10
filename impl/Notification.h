@@ -12,7 +12,8 @@ public:
     Notification(const Json& json = nullptr)
     : Entity(entity_t::notification)
     {
-        if(json!= nullptr) {
+
+        if(json != nullptr) {
             Notification::parse_json(json);
         }
     }
@@ -41,16 +42,18 @@ public:
     }
     void parse_json(const Json& json) override {
         try {
+
             if(json.count("jsonrpc") == 0) {
                 throw RpcException("jsonrpc is missing");
             }
-            std::string jsonrpc = json["jsonprc"].get<std::string>();
+            std::string jsonrpc = json["jsonrpc"].get<std::string>();
             if(jsonrpc != "2.0") {
                 throw RpcException("invalid jsonrpc value:" + jsonrpc);
             }
             if(json.count("method") == 0) {
                 throw RpcException("method is missing");
             }
+
             if(!json["method"].is_string()) {
                 throw RpcException("method must be string");
             }
@@ -59,6 +62,7 @@ public:
                 throw RpcException("method must not be emtpy");
             }
             if(json.count("params") != 0) {
+
                 m_params.parse_json(json["params"]);
             } else {
                 m_params = nullptr;
@@ -67,6 +71,8 @@ public:
             throw;
         } catch(const std::exception& e) {
             throw RpcException(e.what());
+        } catch(...) {
+            mylogd("");
         }
     }
     const std::string& method() const {
@@ -75,7 +81,7 @@ public:
     const Parameter& params() const {
         return m_params;
     }
-    
+
 protected:
     std::string m_method;
     Parameter m_params;
